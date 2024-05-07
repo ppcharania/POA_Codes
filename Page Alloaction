@@ -1,0 +1,109 @@
+block_add = [0,100,600,800,1100,1700]
+
+block_size = []
+
+for i in range(1,len(block_add)):
+    block_size.append((block_add[i] - block_add[i-1]))
+
+# Processes
+
+n = int(input("Enter the number of processes: "))
+p = []
+print("Enter process size: ")
+for i in range(n):
+    process = int(input(f"Process {i+1}: "))
+    p.append(process)
+    
+# bestfit
+print("---------Best Fit--------")
+total_all = 0
+allocated = [0,0,0,0,0]
+
+for pr in p:
+    diff = []
+    for j in range(len(block_size)):
+        diff.append((block_size[j] - pr)) 
+    diff1 = diff.copy()
+    diff1.sort()
+
+    if(diff1[-1] > 0):  # to check whether the process is smaller than any block size or not
+        i = 0  
+        while(diff1[i] < 0): 
+            i += 1
+        if(allocated[diff.index(diff1[i])] != 0):
+            i += 1
+            if i < len(diff1):
+                i = diff.index(diff1[i])
+            else:
+                pass
+        else:
+            i = diff.index(diff1[i])
+        allocated[i] = 1
+        total_all += pr
+        print(f"Process {p.index(pr)+1} assigned block {i+1}")  
+    else:
+        print(f"Process {p.index(pr)+1} cannot be accomodated")
+        
+eff = (total_all/block_add[-1])*100
+print("Efficiency:", eff)
+
+# worstfit
+print("---------Worst Fit--------")
+total_all = 0
+allocated = [0,0,0,0,0]
+
+for prcs in p:
+    diff = []
+    for j in range(len(block_size)):
+        diff.append((block_size[j] - prcs))
+    diff1 = diff.copy()
+    diff1.sort()
+
+    if(diff1[-1] > 0): 
+        i = 0    
+        while(allocated[diff.index(diff1[i-1])] != 0):
+            i -= 1
+        if diff1[i-1] < 0:
+            print(f"Process {p.index(prcs)+1} cannot be accomodated")
+            continue
+
+        i = diff.index(diff1[i-1])
+        allocated[i] = 1
+        total_all += prcs
+        print(f"Process {p.index(prcs)+1} assigned block {i+1}")  
+    else:
+        print(f"Process {p.index(prcs)+1} cannot be accomodated")
+        
+eff = (total_all/block_add[-1])*100
+print("Efficiency:", eff)
+
+
+# firstfit
+print("---------First Fit--------")
+total_all = 0
+allocated = [0,0,0,0,0]
+
+for prcs in p:
+    diff = []
+    for j in range(len(block_size)):
+        diff.append((block_size[j] - prcs))
+    diff1 = diff.copy()
+    diff1.sort()
+
+    if(diff1[-1] > 0): 
+        i = 0    
+        while(i < len(block_size) and (allocated[i] != 0 or diff[i] < 0)):
+            i += 1
+        if(i >= len(block_size)):
+            print(f"Process {p.index(prcs)+1} cannot be accomodated")
+            continue
+        else:
+            pass
+        allocated[i] = 1
+        total_all += prcs
+        print(f"Process {p.index(prcs)+1} assigned block {i+1}")  
+    else:
+        print(f"Process {p.index(prcs)+1} cannot be accomodated")
+        
+eff = (total_all/block_add[-1])*100
+print("Efficiency:", eff)
